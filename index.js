@@ -1,9 +1,11 @@
 const inquierer = require('inquirer');
+const generatePage = require('./src/page-template');
+const {writeFile, copyFile} = require('./src/generate-site');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 
-const [managerArr, engineerArr, internArr] = [];
+const [managerArr, engineerArr, internArr] = [[], [], []];
 
 const managerPrompt = [{
     type: 'input',
@@ -109,29 +111,50 @@ const internPrompt = () => {
 inquierer.prompt(managerPrompt).then((answers) => {
     //create manager
     const manager = new Manager(answers.managerName, answers.managerID, answers.managerEmail, answers.managerOffice);
+    managerArr.push(manager);
+
 
     if (answers.next){
         selectNext();
     }
-});
+})
+.then(() => {
+    return generatePage(managerArr, engineerArr, internArr);
+})
+.then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then(copyFileResponse => {
+    console.log(copyFileResponse);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
 
 const selectNext = () => {
     selectEmployee().then(employeeAnswer => {
-        if(employeeAnswer === 'Engineer'){
+        if(employeeAnswer.employee === 'Engineer'){
             engineerPrompt().then(answers =>{
                 //create engineer
                 const engineer = new Engineer(answers.engineerName, answers.engineerID, answers.engineerEmail, answers.engineerGithub);
+                engineerArr.push(engineer);
 
-                if(engineer.next){
+                if(answers.next){
                     selectNext();
                 }
             });
         } else {
-            internPrompt().then(intern => {
+            internPrompt().then(answers => {
                 //create intern
                 const intern = new Intern(answers.internName, answers.internID, answers.internEmail, answers.internSchool);
+                internArr.push(intern);
 
-                if(intern.next){
+                if(answers.next){
                     selectNext();
                 }
             });
