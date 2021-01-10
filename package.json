@@ -9,9 +9,21 @@
   "author": "Nick May",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^7.3.3"
+    "inquirer": "^7.3.3",
+    "inquirer-recursive": "0.0.6"
   },
   "devDependencies": {
     "jest": "^26.6.3"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickmay9/team-profile-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nickmay9/team-profile-generator/issues"
+  },
+  "homepage": "https://github.com/nickmay9/team-profile-generator#readme"
 }
